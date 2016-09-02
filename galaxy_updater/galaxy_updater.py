@@ -97,10 +97,17 @@ class Updater(object):
         for i, req in enumerate(self.reqs):
             assert req['src'], "Error, src key not found in {0}".format(req)
             src = req['src']
+            short_name = None
             # If src looks like author.role, ask Galaxy about git source
             if re.match(r'[\w\-_\.]+\.[\w\-_\.]+', src):
+                short_name = src
                 src = self._src_from_galaxy(src)
-            short_name = src.split('/')[-1].split('.')[0]
+
+            if 'name' in req.keys():
+                short_name = req['name']
+
+            if not short_name:
+                short_name = src.split('/')[-1].split('.')[0]
             version = req.get('version')
             g = GitTags(src)
 
